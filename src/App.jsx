@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
 
 
@@ -11,52 +11,59 @@ function App() {
     public: false
   })
 
+
   function handleFormData(e) {
     const value =
       e.target.type === "checkbox" ? e.target.checked : e.target.value;
     setNewData((newData) => ({
       ...newData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: value,
     }));
   }
 
-  function fetchData() {
-    axios.post('https://67c5b4f3351c081993fb1ab6.mockapi.io/api/posts')
+  function fetchData(e) {
+    e.preventDefault();
+    axios.post('https://67c5b4f3351c081993fb1ab6.mockapi.io/api/posts', newData)
       .then(res => {
-        setNewData(res.data)
+        console.log(res.data)
+        alert('form inviato')
+      })
+      .catch(err => {
+        console.log(err.data)
+        alert('Non inviato')
+
       })
   }
 
-  console.log(newData)
 
   return (
     <>
       <h1>React-Post-Form</h1>
-      <form>
+      <form onSubmit={fetchData}>
         <input type="text"
           name='author'
           value={newData.author}
           onChange={handleFormData}
-          placeholder='Inserisci'
+          placeholder='Inserisci Autore'
         />
         <input type="text"
           name='title'
           value={newData.title}
           onChange={handleFormData}
-          placeholder='Inserisci'
+          placeholder='Inserisci Titolo'
         />
         <input type="text"
           name='body'
           value={newData.body}
           onChange={handleFormData}
-          placeholder='Inserisci'
+          placeholder='Inserisci Body'
         />
         <input type="checkbox"
           name='public'
           value={newData.public}
           onChange={handleFormData}
         />
-
+        <button type='submit'>Invia</button>
       </form>
     </>
   )
